@@ -1,0 +1,36 @@
+pipeline {
+    agent {
+        node 'gpu480'
+    }
+    environment {
+        PYTHONIOENCODING='utf-8'
+        PYTHONPATH = '.'
+    }
+    parameters{
+    choice(name: 'is_select_db_data', choices: ['true', 'false'], description: '是否查询数据库数据')
+    choice(name: 'project_id', choices: ['k11_sy', 'k11_tj', 'k11_sh', 'k11_gz','zgcyh_jq','sz_tmh','sz_jgs','bj_hgs','bj_tyg', 'sz_kly'],description: '选择要送标的项目ID')
+    string(name: 'createdat', defaultValue: '08-19', description: '数据起始时间', trim: true)
+    string(name: 'endat', defaultValue: '08-20', description: '数据结尾时间', trim: true)
+    string(name: 'limit', defaultValue: '10', description: '数据下载条数', trim: true)
+    choice(name: 'is_download_matchlog_image', choices: ['true', 'false'], description: '是否下载图片')
+    string(name: 'matchlog_json_path', defaultValue: './sql_file/', description: '根据project_id，matchlog_json_path下载图片', trim: true)
+    choice(name: 'is_upload_image', choices: ['true', 'false'], description: '是否上传图片')
+    string(name: 't21imgs_path', defaultValue: './data_last/', description: 'T21imgs图片目录路径', trim: true)
+    choice(name: 'is_send_lable', choices: ['true', 'false'], description: '是否创建送标任务')
+    string(name: 't21imgs_name', defaultValue: 'T21imgs_TOURISM_general_general_zgcyh_20210623', description: 'T21imgs图片目录名称', trim: true)
+    }
+//python3 local_run.py true 08-19 08-20 10 true ./sql_file/matchlog_zgcyh_20210623.json true ./data_last/T21imgs_TOURISM_general_general_zgcyh_20210623 true T21imgs_TOURISM_general_general_zgcyh_20210623
+    stages {
+        stage('Build') {
+            steps {
+                dir('/opt/jenkins/workspace/poc/sendlabel1v1/SendLable1V1') {
+                    sh('whoami')
+                    sh('pwd')
+                    sh('export PYTHONPATH=.')
+                    sh('export PYTHONIOENCODING=utf-8')
+                    sh('PYTHONIOENCODING=utf-8 python3 local_run.py ${is_select_db_data} ${project_id} ${createdat} ${endat} ${limit} ${is_download_matchlog_image} ${matchlog_json_path} ${is_upload_image} ${t21imgs_path} ${is_send_lable} ${t21imgs_name}')
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,5 @@
+check_strategy: normal
+sample_rate: 10
+task_type: normal
+label_mode: normal
+date_type: history

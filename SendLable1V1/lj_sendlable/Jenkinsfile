@@ -1,0 +1,28 @@
+
+pipeline {
+    agent {
+        node 'gpu480'
+    }
+    environment {
+        PYTHONIOENCODING='utf-8'
+        PYTHONPATH = '.'
+    }
+    parameters{
+        string(name: 'foldername', defaultValue: 'li_jiang_20211027', description: '图片文件名', trim: true)
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                dir('/opt/jenkins/workspace/poc/lj_sendlable1v1/SendLable1V1') {
+                    sh('whoami')
+                    sh('pwd')
+                    sh('export PYTHONPATH=.')
+                    sh('export PYTHONIOENCODING=utf-8')
+                    sh('python3 lj_sendlable/lj_run.py ${foldername} ')
+                    
+                }
+            }
+        }
+    }
+}
