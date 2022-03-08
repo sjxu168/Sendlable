@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        node 'gpu480'
-    }
+    agent any
     environment {
         PYTHONIOENCODING='utf-8'
         PYTHONPATH = '.'
